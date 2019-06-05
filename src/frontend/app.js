@@ -22,6 +22,7 @@ const logger = require("morgan");
 const hbs = require("hbs");
 const env = require("env-var");
 
+var Redis = require('ioredis');
 const session = require("express-session");
 const RedisStore = require("connect-redis")(session);
 
@@ -47,10 +48,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use("/healthz", healthRouter); // Load health route early, does not need session init etc...
+app.use(express.static(path.join(__dirname, "public")));
+
+var redisclient = new Redis(env.get("REDIS_ENDPOINT", "redis://localhost:6379/0").asString())
 
 const sessionMiddleware = session({
     store: new RedisStore({
-      url: env.get("REDIS_ENDPOINT", "redis://localhost:6379/0").asString()
+      client: redisclient
     }),
     secret: env.get("SECRET_KEY", "my not so random secret").asString(),
     resave: false,
@@ -69,15 +73,13 @@ app.use(function(req, res, next) {
 
     if (req.session !== undefined) return next();
 
-    if (tries < 0) return next(new Error("Can not start session. Is the session store available?"));
+    if (tries < 0) return next(new Error("Can not start session. Is the session store available? " + env.get('REDIS_ENDPOINT').asString()));
 
     sessionMiddleware(req, res, lookupSession);
   }
 
   lookupSession();
 });
-
-app.use(express.static(path.join(__dirname, "public")));
 
 // Custom flash middleware -- from Ethan Brown's book, 'Web Development with Node & Express'
 app.use(function(req, res, next) {
