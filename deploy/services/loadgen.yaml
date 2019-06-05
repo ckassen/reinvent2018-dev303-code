@@ -15,15 +15,22 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: loadgen
   namespace: microservices-aws
+  annotations:
+    appmesh.k8s.aws/sidecarInjectorWebhook: disabled
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: loadgen
   template:
     metadata:
+      annotations:
+        appmesh.k8s.aws/sidecarInjectorWebhook: disabled
       labels:
         app: loadgen
     spec:

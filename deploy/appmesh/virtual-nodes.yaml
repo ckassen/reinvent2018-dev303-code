@@ -1,0 +1,122 @@
+##
+
+apiVersion: appmesh.k8s.aws/v1beta1
+kind: VirtualNode
+metadata:
+  name: frontend
+  namespace: microservices-aws
+spec:
+  meshName: appmesh-eks
+  listeners:
+    - portMapping:
+        port: 8080
+        protocol: http
+  serviceDiscovery:
+    dns:
+      hostName: frontend.microservices-aws.svc.cluster.local
+  backends:
+    - virtualService:
+        virtualServiceName: recommenderservice.microservices-aws
+    - virtualService:
+        virtualServiceName: orderservice.microservices-aws
+    - virtualService:
+        virtualServiceName: cartservice.microservices-aws
+    - virtualService:
+        virtualServiceName: catalogservice.microservices-aws
+    - virtualService:
+        virtualServiceName: imageservice.microservices-aws
+    - virtualService:
+        virtualServiceName: redis.microservices-aws
+
+---
+apiVersion: appmesh.k8s.aws/v1beta1
+kind: VirtualNode
+metadata:
+  name: cartservice
+  namespace: microservices-aws
+spec:
+  meshName: appmesh-eks
+  listeners:
+    - portMapping:
+        port: 8080
+        protocol: http
+  serviceDiscovery:
+    dns:
+      hostName: cartservice.microservices-aws.svc.cluster.local
+  backends:
+    - virtualService:
+      virtualServiceName: catalogservice.microservices-aws
+    - virtualService:
+      virtualServiceName: redis.microservices-aws
+
+---
+apiVersion: appmesh.k8s.aws/v1beta1
+kind: VirtualNode
+metadata:
+  name: catalogservice
+  namespace: microservices-aws
+spec:
+  meshName: appmesh-eks
+  listeners:
+    - portMapping:
+        port: 8080
+        protocol: http
+  serviceDiscovery:
+    dns:
+      hostName: catalogservice.microservices-aws.svc.cluster.local
+
+---
+apiVersion: appmesh.k8s.aws/v1beta1
+kind: VirtualNode
+metadata:
+  name: imageservice
+  namespace: microservices-aws
+spec:
+  meshName: appmesh-eks
+  listeners:
+    - portMapping:
+        port: 9000
+        protocol: http
+  serviceDiscovery:
+    dns:
+      hostName: imageservice.microservices-aws.svc.cluster.local
+
+---
+apiVersion: appmesh.k8s.aws/v1beta1
+kind: VirtualNode
+metadata:
+  name: orderservice
+  namespace: microservices-aws
+spec:
+  meshName: appmesh-eks
+  listeners:
+    - portMapping:
+        port: 8080
+        protocol: http
+  serviceDiscovery:
+    dns:
+      hostName: orderservice.microservices-aws.svc.cluster.local
+  backends:
+    - virtualService:
+        virtualServiceName: catalogservice.microservices-aws
+    - virtualService:
+        virtualServiceName: cartservice.microservices-aws
+
+---
+apiVersion: appmesh.k8s.aws/v1beta1
+kind: VirtualNode
+metadata:
+  name: recommenderservice
+  namespace: microservices-aws
+spec:
+  meshName: appmesh-eks
+  listeners:
+    - portMapping:
+        port: 8080
+        protocol: http
+  serviceDiscovery:
+    dns:
+      hostName: recommenderservice.microservices-aws.svc.cluster.local
+  backends:
+    - virtualService:
+        virtualServiceName: catalogservice.microservices-aws

@@ -14,13 +14,18 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: catalogservice
   namespace: microservices-aws
+  labels:
+    app: catalogservice
 spec:
-  replicas: 2
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalogservice
   template:
     metadata:
       labels:
@@ -56,19 +61,19 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
-          readinessProbe:
-            initialDelaySeconds: 10
-            periodSeconds: 30
-            httpGet:
-              path: "/api/v1/healthz"
-              port: 8080
-          livenessProbe:
-            timeoutSeconds: 5
-            periodSeconds: 15
-            initialDelaySeconds: 15
-            httpGet:
-              path: "/api/v1/healthz"
-              port: 8080
+          # readinessProbe:
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 30
+          #   httpGet:
+          #     path: "/api/v1/healthz"
+          #     port: 8080
+          # livenessProbe:
+          #   timeoutSeconds: 5
+          #   periodSeconds: 15
+          #   initialDelaySeconds: 15
+          #   httpGet:
+          #     path: "/api/v1/healthz"
+          #     port: 8080
           envFrom: 
             - 
               configMapRef: 
@@ -98,5 +103,4 @@ spec:
     app: catalogservice
   ports:
     - name: http
-      port: 80
-      targetPort: 8080
+      port: 8080

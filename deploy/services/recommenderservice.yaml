@@ -15,13 +15,16 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: recommenderservice
   namespace: microservices-aws
 spec:
-  replicas: 2
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recommenderservice
   template:
     metadata:
       labels:
@@ -34,19 +37,19 @@ spec:
           imagePullPolicy: Always
           ports:
           - containerPort: 8080
-          readinessProbe:
-            initialDelaySeconds: 10
-            periodSeconds: 30
-            httpGet:
-              path: "/api/v1/healthz"
-              port: 8080
-          livenessProbe:
-            initialDelaySeconds: 10
-            periodSeconds: 30
-            timeoutSeconds: 5
-            httpGet:
-              path: "/api/v1/healthz"
-              port: 8080
+          # readinessProbe:
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 30
+          #   httpGet:
+          #     path: "/api/v1/healthz"
+          #     port: 8080
+          # livenessProbe:
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 30
+          #   timeoutSeconds: 5
+          #   httpGet:
+          #     path: "/api/v1/healthz"
+          #     port: 8080
           envFrom:
             - configMapRef:
                 name: services-environment-config
@@ -75,5 +78,4 @@ spec:
     app: recommenderservice
   ports:
   - name: http
-    port: 80
-    targetPort: 8080
+    port: 8080

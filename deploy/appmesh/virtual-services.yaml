@@ -1,0 +1,108 @@
+##
+
+apiVersion: appmesh.k8s.aws/v1beta1
+kind: VirtualService
+metadata:
+  name: frontend
+  namespace: microservices-aws
+spec:
+  meshName: appmesh-eks
+  routes:
+    - name: route-to-frontend
+      http:
+        match:
+          prefix: /
+        action:
+          weightedTargets:
+            - virtualNodeName: frontend
+              weight: 1
+
+---
+apiVersion: appmesh.k8s.aws/v1beta1
+kind: VirtualService
+metadata:
+  name: cartservice
+  namespace: microservices-aws
+spec:
+  meshName: appmesh-eks
+  routes:
+    - name: route-to-cartservice
+      http:
+        match:
+          prefix: /
+        action:
+          weightedTargets:
+            - virtualNodeName: cartservice
+              weight: 1
+
+---
+apiVersion: appmesh.k8s.aws/v1beta1
+kind: VirtualService
+metadata:
+  name: catalogservice
+  namespace: microservices-aws
+spec:
+  meshName: appmesh-eks
+  routes:
+    - name: route-to-catalogservice
+      http:
+        match:
+          prefix: /
+        action:
+          weightedTargets:
+            - virtualNodeName: catalogservice
+              weight: 1
+
+---
+apiVersion: appmesh.k8s.aws/v1beta1
+kind: VirtualService
+metadata:
+  name: imageservice
+  namespace: microservices-aws
+spec:
+  meshName: appmesh-eks
+  routes:
+    - name: route-to-imageservice
+      http:
+        match:
+          prefix: /
+        action:
+          weightedTargets:
+            - virtualNodeName: imageservice
+              weight: 1
+
+---
+apiVersion: appmesh.k8s.aws/v1beta1
+kind: VirtualService
+metadata:
+  name: orderservice
+  namespace: microservices-aws
+spec:
+  meshName: appmesh-eks
+  routes:
+    - name: route-to-orderservice
+      http:
+        match:
+          prefix: /
+        action:
+          weightedTargets:
+            - virtualNodeName: orderservice
+              weight: 1
+
+---
+apiVersion: appmesh.k8s.aws/v1beta1
+kind: VirtualService
+metadata:
+  name: recommenderservice
+  namespace: microservices-aws
+spec:
+  meshName: appmesh-eks
+  routes:
+    - name: route-to-recommenderservice
+      http:
+        match:
+          prefix: /
+        action:
+          weightedTargets:
+            - virtualNodeName: recommenderservice
+              weight: 1
